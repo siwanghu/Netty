@@ -32,4 +32,6 @@ public class ConstantValue {
     * auditoryworks对应的ascii码
     * */
     public static final byte[] Tail={0x61,0x75,0x64,0x69,0x74,0x6F,0x72,0x79,0x77,0x6F,0x72,0x6B,0x73};
+
+    public static final String fileDir="C:\\Users\\ylchen\\Desktop\\upload";
 }
