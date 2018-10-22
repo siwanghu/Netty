@@ -29,12 +29,14 @@ public class WsDecoder extends ByteToMessageDecoder {
                     return;
                 }
             }
+            int versionId=buffer.readInt();
             long deviceIdHigh=buffer.readLong();
             long deviceIdLow=buffer.readLong();
             long sessionIdHigh=buffer.readLong();
             long sessionIdLow=buffer.readLong();
             long sequenceId=buffer.readLong();
             long reserve=buffer.readLong();
+            int check=buffer.readInt();
             int length = buffer.readInt();
             if (buffer.readableBytes() < length) {
                 buffer.readerIndex(beginReader);
@@ -42,7 +44,7 @@ public class WsDecoder extends ByteToMessageDecoder {
             }
             byte[] data = new byte[length];
             buffer.readBytes(data);
-            WsProtocol protocol = new WsProtocol(deviceIdHigh,deviceIdLow,sessionIdHigh,sessionIdLow,sequenceId,reserve,length,data);
+            WsProtocol protocol = new WsProtocol(versionId,deviceIdHigh,deviceIdLow,sessionIdHigh,sessionIdLow,sequenceId,reserve,check,length,data);
             out.add(protocol);
         }
     }

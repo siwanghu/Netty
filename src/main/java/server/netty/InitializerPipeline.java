@@ -1,10 +1,13 @@
 package server.netty;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.FixedLengthFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
@@ -22,6 +25,8 @@ public class InitializerPipeline extends ChannelInitializer<SocketChannel> {
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
+		ByteBuf delimiter = Unpooled.copiedBuffer("auditoryworks".getBytes());
+		pipeline.addFirst(new DelimiterBasedFrameDecoder(8192, delimiter));
 		pipeline.addLast(new WsEncoder());
 		pipeline.addLast(new WsDecoder());
 		pipeline.addLast("handler", new EchoServerHandler());

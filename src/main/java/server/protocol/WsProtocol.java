@@ -4,28 +4,36 @@ import java.util.Arrays;
 
 public class WsProtocol {
     private int head_data = ConstantValue.HEAD_DATA;     //开始标志位
-    private long deviceIdHigh;                            //设备id高8位
-    private long deviceIdLow;                             //设备id低8位
-    private long sessionIdHigh;                           //回话id高8位
-    private long sessionIdLow;                            //回话id低8位
+    private int versionId;                                 //版本号
+    private long deviceIdHigh;                            //设备id高64位
+    private long deviceIdLow;                             //设备id低64位
+    private long sessionIdHigh;                           //回话id高64位
+    private long sessionIdLow;                            //回话id低64位
     private long sequenceId;                               //序号id
     private long reserve;                                  //预留8字节标志位
+    private int check;                                      //校验码
     private int contentLength;                            //数据字段长度
     private byte[] content;                                //长度必须小于1024字节
 
-    public WsProtocol(long deviceIdHigh, long deviceIdLow, long sessionIdHigh, long sessionIdLow, long sequenceId, long reserve, int contentLength, byte[] content) {
+    public WsProtocol(int versionId,long deviceIdHigh, long deviceIdLow, long sessionIdHigh, long sessionIdLow, long sequenceId, long reserve, int check,int contentLength, byte[] content) {
+        this.versionId=versionId;
         this.deviceIdHigh = deviceIdHigh;
         this.deviceIdLow = deviceIdLow;
         this.sessionIdHigh = sessionIdHigh;
         this.sessionIdLow = sessionIdLow;
         this.sequenceId = sequenceId;
         this.reserve = reserve;
+        this.check=check;
         this.contentLength = contentLength;
         this.content = content;
     }
 
     public int getHead_data() {
         return head_data;
+    }
+
+    public int getVersionId() {
+        return versionId;
     }
 
     public long getDeviceIdHigh() {
@@ -52,12 +60,20 @@ public class WsProtocol {
         return reserve;
     }
 
+    public int getCheck() {
+        return check;
+    }
+
     public int getContentLength() {
         return contentLength;
     }
 
     public byte[] getContent() {
         return content;
+    }
+
+    public void setVersionId(int versionId) {
+        this.versionId = versionId;
     }
 
     public void setDeviceIdHigh(long deviceIdHigh) {
@@ -84,6 +100,10 @@ public class WsProtocol {
         this.reserve = reserve;
     }
 
+    public void setCheck(int check) {
+        this.check = check;
+    }
+
     public void setContentLength(int contentLength) {
         this.contentLength = contentLength;
     }
@@ -96,12 +116,14 @@ public class WsProtocol {
     public String toString() {
         return "WsProtocol{" +
                 "head_data=" + head_data +
+                ", versionId=" + versionId +
                 ", deviceIdHigh=" + deviceIdHigh +
                 ", deviceIdLow=" + deviceIdLow +
                 ", sessionIdHigh=" + sessionIdHigh +
                 ", sessionIdLow=" + sessionIdLow +
                 ", sequenceId=" + sequenceId +
                 ", reserve=" + reserve +
+                ", check=" + check +
                 ", contentLength=" + contentLength +
                 ", content=" + Arrays.toString(content) +
                 '}';
