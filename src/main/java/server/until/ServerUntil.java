@@ -47,7 +47,6 @@ public class ServerUntil {
         if (data.length != 16) {
             throw new IllegalArgumentException("Invalid UUID byte[]");
         }
-
         long msb = 0;
         long lsb = 0;
         for (int i = 0; i < 8; i++)

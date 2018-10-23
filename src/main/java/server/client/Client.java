@@ -1,14 +1,16 @@
 package server.client;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import server.until.ServerUntil;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
 public class Client {
     public static void main(String[] args) throws IOException {
+        Socket client = new Socket("127.0.0.1", 7766);
+        OutputStream out =client.getOutputStream();
+
         byte[] head=new byte[]{
                 0x57,0x53,0x4B,0x4A,                      //头部
                 0x00,0x00,0x00,0x01,                      //版本号
@@ -24,17 +26,24 @@ public class Client {
 
         byte[] data=new byte[1024];
         for(int i=0;i<data.length;i++){
-            data[i]=(byte) 0xFF;
+            data[i]=(byte) 0x00;
         }
 
         byte[] tail="auditoryworks".getBytes();
-
-        Socket client = new Socket("127.0.0.1", 7766);
-        OutputStream out =client.getOutputStream();
-        byte[] bytes=method(method(head,data),tail);
-        while(true) {
-            System.out.println("发送数据包成功！");
+        long sequence=0;
+        FileInputStream in=new FileInputStream(new File("D:\\kws.wav"));
+        while(in.read(data,0,data.length)>-1){
+            byte[] bytes=method(method(head,data),tail);
+            byte[] sequenceID= ServerUntil.longToBytes(sequence);
+            byte[] length=ServerUntil.longToBytes(data.length);
+            for(int i=0,j=40;i<sequenceID.length;i++,j++){
+                bytes[j]=sequenceID[i];
+            }
             out.write(bytes);
+            System.out.println(data.length);
+            System.out.println(Arrays.toString(data));
+            System.out.println("发送数据包:"+sequence+"成功！");
+            sequence++;
         }
     }
 
