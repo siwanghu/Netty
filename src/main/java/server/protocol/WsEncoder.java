@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 public class WsEncoder  extends MessageToByteEncoder<WsProtocol> {
+
     @Override
     protected void encode(ChannelHandlerContext tcx, WsProtocol msg,
                           ByteBuf out) throws Exception {

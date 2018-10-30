@@ -1,8 +1,9 @@
 package server.protocol;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class WsProtocol {
+public class WsProtocol implements Serializable {
     private int head_data = ConstantValue.HEAD_DATA;     //开始标志位
     private int versionId;                                 //版本号
     private long deviceIdHigh;                            //设备id高64位

@@ -31,7 +31,18 @@ public class ConstantValue {
     * 结尾标志位
     * auditoryworks对应的ascii码
     * */
-    public static final byte[] Tail={0x61,0x75,0x64,0x69,0x74,0x6F,0x72,0x79,0x77,0x6F,0x72,0x6B,0x73};
+    public static final byte[] TAIL={0x61,0x75,0x64,0x69,0x74,0x6F,0x72,0x79,0x77,0x6F,0x72,0x6B,0x73};
 
-    public static final String fileDir="C:\\Users\\ylchen\\Desktop\\upload";
+    public static final int BUFFER_SIZE=1024*5;
+
+//    public static final String FILE_DIR="D:\\upload";
+
+    public static final String FILE_DIR="/root/upload";
+
+//    public static final String ACTIVEMQ_URL = "failover:(tcp://127.0.0.1:61616)?initialReconnectDelay=10000";
+
+    public static final String ACTIVEMQ_URL = "failover:(tcp://47.100.62.57:61616)?initialReconnectDelay=10000";
+
+    public static final String TOPIC_NAME = "package";
+
 }
