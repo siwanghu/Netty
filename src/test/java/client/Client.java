@@ -84,7 +84,7 @@ public class Client {
 
     public  static void test2(){
         ArrayList<ThreadClient> threads=new ArrayList<ThreadClient>();
-        for(int i=0;i<500;i++) {
+        for(int i=0;i<1;i++) {
             ThreadClient thread =new ThreadClient(i);
             threads.add(thread);
         }

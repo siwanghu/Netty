@@ -27,7 +27,7 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
 		serverUntil=new ServerUntil();
 		connection= ActiveMQPool.getConnection();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		destination = session.createTopic(ConstantValue.TOPIC_NAME);
+		destination = session.createQueue(ConstantValue.QUEUE_NAME);
 		producer = session.createProducer(destination);
 	}
 

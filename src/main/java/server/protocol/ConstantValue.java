@@ -35,14 +35,14 @@ public class ConstantValue {
 
     public static final int BUFFER_SIZE=1024*5;
 
-//    public static final String FILE_DIR="D:\\upload";
+    public static final String QUEUE_NAME = "package";
 
     public static final String FILE_DIR="/root/upload";
-
-//    public static final String ACTIVEMQ_URL = "failover:(tcp://127.0.0.1:61616)?initialReconnectDelay=10000";
-
     public static final String ACTIVEMQ_URL = "failover:(tcp://47.100.62.57:61616)?initialReconnectDelay=10000";
+    public static final String MONGODB_URL ="47.100.62.57";
 
-    public static final String TOPIC_NAME = "package";
+//    public static final String FILE_DIR="D:\\upload";
+//    public static final String ACTIVEMQ_URL = "failover:(tcp://127.0.0.1:61616)?initialReconnectDelay=10000";
+//    public static final String MONGODB_URL ="127.0.0.1";
 
 }

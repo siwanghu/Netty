@@ -38,6 +38,7 @@ public class ThreadClient extends Thread implements Runnable {
     @Override
     public void run() {
         try {
+//            Socket client = new Socket("127.0.0.1", 7766);
             Socket client = new Socket("139.196.127.240", 7766);
             OutputStream out = client.getOutputStream();
             byte[] deviceIDHigh = serverUntil.longToBytes(device[i]);
