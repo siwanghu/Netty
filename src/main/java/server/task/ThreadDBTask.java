@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.netty.handler.EchoServerHandler;
 import server.pool.RDBPool;
-import server.protocol.WsProtocol;
+import server.protocol.WsProtocolRequest;
 import server.until.ServerUntil;
 
 import java.io.Serializable;
@@ -15,17 +15,17 @@ import java.util.List;
 
 public class ThreadDBTask implements Runnable, Serializable {
     private static final Logger LOGGER= LoggerFactory.getLogger(EchoServerHandler.class);
-    private WsProtocol wsProtocol;
-    private List<WsProtocol> buffer;
+    private WsProtocolRequest wsProtocol;
+    private List<WsProtocolRequest> buffer;
     private ServerUntil serverUntil;
 
-    public ThreadDBTask(WsProtocol wsProtocol){
+    public ThreadDBTask(WsProtocolRequest wsProtocol){
         this.wsProtocol=wsProtocol;
         this.buffer=null;
         serverUntil=new ServerUntil();
     }
 
-    public ThreadDBTask(List<WsProtocol> buffer){
+    public ThreadDBTask(List<WsProtocolRequest> buffer){
         this.buffer=buffer;
         this.wsProtocol=null;
         serverUntil=new ServerUntil();

@@ -3,7 +3,7 @@ package server.pool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.netty.handler.EchoServerHandler;
-import server.protocol.WsProtocol;
+import server.protocol.WsProtocolRequest;
 import server.task.ThreadDBTask;
 import server.task.ThreadFileTask;
 
@@ -18,19 +18,19 @@ public class ThreadPool {
     private  final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(512, 1024, 10,
             TimeUnit.SECONDS, new LinkedBlockingQueue());
 
-    public  void addTaskWirteFile(WsProtocol wsProtocol){
+    public  void addTaskWirteFile(WsProtocolRequest wsProtocol){
         threadPool.execute(new ThreadFileTask(wsProtocol));
     }
 
-    public void addTaskWirteFile(List<WsProtocol> buffer){
+    public void addTaskWirteFile(List<WsProtocolRequest> buffer){
         threadPool.execute(new ThreadFileTask(buffer));
     }
 
-    public void addTaskWriteDB(WsProtocol wsProtocol){
+    public void addTaskWriteDB(WsProtocolRequest wsProtocol){
         threadPool.execute(new ThreadDBTask(wsProtocol));
     }
 
-    public void addTaskWriteDB(List<WsProtocol> buffer){
+    public void addTaskWriteDB(List<WsProtocolRequest> buffer){
         threadPool.execute(new ThreadDBTask(buffer));
     }
 

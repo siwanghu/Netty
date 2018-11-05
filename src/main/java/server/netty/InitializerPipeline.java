@@ -14,6 +14,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import server.netty.handler.EchoServerHandler;
+import server.protocol.ConstantValue;
 import server.protocol.WsDecoder;
 import server.protocol.WsEncoder;
 
@@ -26,7 +27,7 @@ public class InitializerPipeline extends ChannelInitializer<SocketChannel> {
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
 		ByteBuf delimiter = Unpooled.copiedBuffer("auditoryworks".getBytes());
-		pipeline.addFirst(new DelimiterBasedFrameDecoder(8192, delimiter));
+		pipeline.addFirst(new DelimiterBasedFrameDecoder(ConstantValue.MAX_PACKAGE_SIZE, delimiter));
 		pipeline.addLast(new WsEncoder());
 		pipeline.addLast(new WsDecoder());
 		pipeline.addLast("handler", new EchoServerHandler());

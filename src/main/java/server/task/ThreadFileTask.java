@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.netty.handler.EchoServerHandler;
 import server.protocol.ConstantValue;
-import server.protocol.WsProtocol;
+import server.protocol.WsProtocolRequest;
 import server.until.ServerUntil;
 
 import java.io.File;
@@ -14,17 +14,17 @@ import java.util.List;
 
 public class ThreadFileTask implements Runnable, Serializable {
     private static final Logger LOGGER= LoggerFactory.getLogger(EchoServerHandler.class);
-    private WsProtocol wsProtocol;
-    private List<WsProtocol> buffer;
+    private WsProtocolRequest wsProtocol;
+    private List<WsProtocolRequest> buffer;
     private ServerUntil serverUntil;
 
-    public ThreadFileTask(WsProtocol wsProtocol){
+    public ThreadFileTask(WsProtocolRequest wsProtocol){
         this.wsProtocol=wsProtocol;
         this.buffer=null;
         serverUntil=new ServerUntil();
     }
 
-    public ThreadFileTask(List<WsProtocol> buffer){
+    public ThreadFileTask(List<WsProtocolRequest> buffer){
         this.buffer=buffer;
         this.wsProtocol=null;
         serverUntil=new ServerUntil();

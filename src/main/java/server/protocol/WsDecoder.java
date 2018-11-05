@@ -3,7 +3,6 @@ package server.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.ReferenceCountUtil;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class WsDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer,
                           List<Object> out) throws Exception {
         if (buffer.readableBytes() >= BASE_LENGTH) {
-            if (buffer.readableBytes() > 2048) {
+            if (buffer.readableBytes() > ConstantValue.MAX_PACKAGE_SIZE) {
                 buffer.skipBytes(buffer.readableBytes());
             }
             int beginReader;
@@ -30,7 +29,8 @@ public class WsDecoder extends ByteToMessageDecoder {
                     return;
                 }
             }
-            int versionId=buffer.readInt();
+            short typeid=buffer.readShort();
+            short versionId=buffer.readShort();
             long deviceIdHigh=buffer.readLong();
             long deviceIdLow=buffer.readLong();
             long sessionIdHigh=buffer.readLong();
@@ -45,7 +45,7 @@ public class WsDecoder extends ByteToMessageDecoder {
             }
             byte[] data = new byte[length];
             buffer.readBytes(data);
-            WsProtocol protocol = new WsProtocol(versionId,deviceIdHigh,deviceIdLow,sessionIdHigh,sessionIdLow,sequenceId,reserve,check,length,data);
+            WsProtocolRequest protocol = new WsProtocolRequest(typeid,versionId,deviceIdHigh,deviceIdLow,sessionIdHigh,sessionIdLow,sequenceId,reserve,check,length,data);
             out.add(protocol);
         }
     }

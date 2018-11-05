@@ -7,9 +7,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.netty.handler.EchoServerHandler;
-import server.pool.ThreadPool;
 import server.protocol.ConstantValue;
-import server.protocol.WsProtocol;
+import server.protocol.WsProtocolRequest;
 import server.until.ServerUntil;
 import org.bson.Document;
 
@@ -32,7 +31,7 @@ public class Subscriber {
         messageConsumer.setMessageListener((message) -> {
             ObjectMessage objectMessage = (ObjectMessage) message;
             try {
-                WsProtocol wsProtocol=(WsProtocol) objectMessage.getObject();
+                WsProtocolRequest wsProtocol=(WsProtocolRequest) objectMessage.getObject();
                 String deviceID = serverUntil.bytesToStringUUID(serverUntil.longToBytes(wsProtocol.getDeviceIdHigh()), serverUntil.longToBytes(wsProtocol.getDeviceIdLow()));
                 String sessionID = serverUntil.bytesToStringUUID(serverUntil.longToBytes(wsProtocol.getSessionIdHigh()), serverUntil.longToBytes(wsProtocol.getSessionIdLow()));
                 String sequenceID = String.valueOf(wsProtocol.getSequenceId());

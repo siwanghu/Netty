@@ -3,9 +3,10 @@ package server.protocol;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class WsProtocol implements Serializable {
-    private int head_data = ConstantValue.HEAD_DATA;     //开始标志位
-    private int versionId;                                 //版本号
+public class WsProtocolRequest implements Serializable {
+    private int head_data = ConstantValue.HEAD_DATA;      //开始标志位
+    private short typeId;                                  //类型
+    private short versionId;                               //版本号
     private long deviceIdHigh;                            //设备id高64位
     private long deviceIdLow;                             //设备id低64位
     private long sessionIdHigh;                           //回话id高64位
@@ -14,9 +15,10 @@ public class WsProtocol implements Serializable {
     private long reserve;                                  //预留8字节标志位
     private int check;                                      //校验码
     private int contentLength;                            //数据字段长度
-    private byte[] content;                                //长度必须小于1024字节
+    private byte[] content;                                //数据体
 
-    public WsProtocol(int versionId,long deviceIdHigh, long deviceIdLow, long sessionIdHigh, long sessionIdLow, long sequenceId, long reserve, int check,int contentLength, byte[] content) {
+    public WsProtocolRequest(short typeId, short versionId, long deviceIdHigh, long deviceIdLow, long sessionIdHigh, long sessionIdLow, long sequenceId, long reserve, int check, int contentLength, byte[] content) {
+        this.typeId=typeId;
         this.versionId=versionId;
         this.deviceIdHigh = deviceIdHigh;
         this.deviceIdLow = deviceIdLow;
@@ -31,6 +33,10 @@ public class WsProtocol implements Serializable {
 
     public int getHead_data() {
         return head_data;
+    }
+
+    public short getTypeId() {
+        return typeId;
     }
 
     public int getVersionId() {
@@ -73,7 +79,11 @@ public class WsProtocol implements Serializable {
         return content;
     }
 
-    public void setVersionId(int versionId) {
+    public void setTypeId(short typeId) {
+        this.typeId = typeId;
+    }
+
+    public void setVersionId(short versionId) {
         this.versionId = versionId;
     }
 
@@ -117,6 +127,7 @@ public class WsProtocol implements Serializable {
     public String toString() {
         return "WsProtocol{" +
                 "head_data=" + head_data +
+                ", typeId=" + typeId +
                 ", versionId=" + versionId +
                 ", deviceIdHigh=" + deviceIdHigh +
                 ", deviceIdLow=" + deviceIdLow +

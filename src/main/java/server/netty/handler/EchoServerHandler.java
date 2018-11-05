@@ -2,21 +2,18 @@ package server.netty.handler;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import server.pool.ActiveMQPool;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import server.protocol.ConstantValue;
-import server.protocol.WsProtocol;
-import server.until.ServerUntil;
+import server.protocol.WsProtocolRequest;
+import server.protocol.WsProtocolResponse;
 
 import javax.jms.*;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.util.*;
 
 public class EchoServerHandler extends ChannelHandlerAdapter {
-	private ServerUntil serverUntil;
+	private ConnectionFactory connectionFactory;
 	private Destination destination;
 	private MessageProducer producer;
 	private Connection connection;
@@ -24,8 +21,10 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
 
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-		serverUntil=new ServerUntil();
-		connection= ActiveMQPool.getConnection();
+		connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,
+				ActiveMQConnection.DEFAULT_PASSWORD, ConstantValue.ACTIVEMQ_URL);
+		connection= connectionFactory.createConnection();
+		connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		destination = session.createQueue(ConstantValue.QUEUE_NAME);
 		producer = session.createProducer(destination);
@@ -33,15 +32,20 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		WsProtocol wsProtocol=(WsProtocol)msg;
+		WsProtocolRequest wsProtocol=(WsProtocolRequest)msg;
 		ReferenceCountUtil.release(msg);
-		ObjectMessage objectMessage=session.createObjectMessage(wsProtocol);
-		producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-		producer.send(destination,objectMessage);
+		if(wsProtocol.getTypeId()==0) {
+			ObjectMessage objectMessage = session.createObjectMessage(wsProtocol);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			producer.send(destination, objectMessage);
+		}else if(wsProtocol.getTypeId()==1){
+			ctx.channel().writeAndFlush(new WsProtocolResponse(ConstantValue.PONG));
+		}
 	}
 
 	@Override
-	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+	public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+		super.close(ctx, promise);
 		closeResourse();
 	}
 
@@ -54,11 +58,7 @@ public class EchoServerHandler extends ChannelHandlerAdapter {
 	private void closeResourse() throws Exception{
 		session.close();
 		producer.close();
-		serverUntil=null;
-		destination=null;
-		producer=null;
-		connection=null;
-		session=null;
+		connection.close();
 		System.gc();
 	}
 }

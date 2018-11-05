@@ -4,22 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-public class WsEncoder  extends MessageToByteEncoder<WsProtocol> {
+public class WsEncoder extends MessageToByteEncoder<WsProtocolResponse> {
 
     @Override
-    protected void encode(ChannelHandlerContext tcx, WsProtocol msg,
+    protected void encode(ChannelHandlerContext tcx, WsProtocolResponse msg,
                           ByteBuf out) throws Exception {
-        out.writeInt(msg.getHead_data());
-        out.writeInt(msg.getVersionId());
-        out.writeLong(msg.getDeviceIdHigh());
-        out.writeLong(msg.getDeviceIdLow());
-        out.writeLong(msg.getSessionIdHigh());
-        out.writeLong(msg.getSessionIdLow());
-        out.writeLong(msg.getSequenceId());
-        out.writeLong(msg.getReserve());
-        out.writeInt(msg.getCheck());
-        out.writeInt(msg.getContentLength());
-        out.writeBytes(msg.getContent());
-        out.writeBytes("auditoryworks".getBytes());
+        out.writeByte(msg.getType());
     }
 }

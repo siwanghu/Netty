@@ -9,30 +9,9 @@ import java.net.Socket;
 import java.util.*;
 
 public class Client {
-    private static  byte[] head=new byte[]{
-            0x57,0x53,0x4B,0x4A,                      //头部
-            0x00,0x00,0x00,0x01,                      //版本号
-            0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x09, //设备id高位
-            0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x08, //设备id低位
-            0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x06, //回话id高位
-            0x00,0x00,0x00,0x00,0x00,0x00,0x09,0x0F, //回话id低位
-            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01, //序号id
-            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00, //保留字段
-            0x00,0x00,0x00,0x00,                     //校验码
-            0x00,0x00,0x04,0x00,                     //长度
-    };
-    private static byte[] data=new byte[1024];
-    private static byte[] tail="auditoryworks".getBytes();
-    private static Random random=new Random();
-    private static int[] device={0,1,2,3,4,5,6,7,8,9,10,
-                                   11,12,13,14,15,16,17,18,19,20,
-                                   21,22,23,24,25,26,27,28,29,30,
-                                   31,32,33,34,35,36,37,38,39,40,
-                                   41,42,43,44,45,46,47,48,49,50};
-    private static ServerUntil serverUntil=new ServerUntil();
+    private static byte[] data=new byte[1024*1024*2];
 
     public static void main(String[] args){
-        //test1();
         //test3("00000166-a9ea-af40-0000-000000000108","00000000-0000-0206-0000-00000000090f");
         test2();
 
@@ -49,42 +28,9 @@ public class Client {
 //        }
     }
 
-    public static void test1() {
-        try {
-            long id= Calendar.getInstance().getTimeInMillis()+new Random().nextInt(100000);
-            ThreadClient.currentThread().setName("线程"+id);
-            byte[] deviceID = serverUntil.longToBytes(id);
-            System.out.println(Arrays.toString(deviceID));
-            for (int x = 0, y = 8; x < deviceID.length; x++, y++) {
-                head[y] = deviceID[x];
-            }
-            Socket client = new Socket("127.0.0.1", 7766);
-            OutputStream out = client.getOutputStream();
-            for (int i = 0; i < data.length; i++) {
-                data[i] = (byte) 0x00;
-            }
-            long sequence = 0;
-            FileInputStream in = new FileInputStream(new File("D:\\music.mp3"));
-            while (in.read(data) > -1) {
-                byte[] bytes = method(method(head, data), tail);
-                byte[] sequenceID = serverUntil.longToBytes(sequence);
-                byte[] length = serverUntil.longToBytes(data.length);
-                for (int i = 0, j = 40; i < sequenceID.length; i++, j++) {
-                    bytes[j] = sequenceID[i];
-                }
-                out.write(bytes);
-                sequence++;
-                System.out.println(ThreadClient.currentThread().getName()+": 发送"+sequence+"   成功");
-            }
-            out.close();
-        }catch (Exception e){
-            System.out.println(e);
-        }
-    }
-
     public  static void test2(){
         ArrayList<ThreadClient> threads=new ArrayList<ThreadClient>();
-        for(int i=0;i<1;i++) {
+        for(int i=0;i<100;i++) {
             ThreadClient thread =new ThreadClient(i);
             threads.add(thread);
         }
@@ -104,7 +50,7 @@ public class Client {
     public static void test3(String deviceID,String sessionID){
         Jedis jedis= RedisPool.getJedis();
         try {
-            File filename=new File("D:\\test.zip");
+            File filename=new File("D:\\a.zip");
             if(!filename.exists())
                 filename.createNewFile();
             OutputStream file = new FileOutputStream(filename);

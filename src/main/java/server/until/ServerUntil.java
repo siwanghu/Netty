@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.netty.handler.EchoServerHandler;
 import server.protocol.ConstantValue;
-import server.protocol.WsProtocol;
+import server.protocol.WsProtocolRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,7 +87,7 @@ public class ServerUntil {
         }
     }
 
-    public void recordPackage(WsProtocol wsProtocol){
+    public void recordPackage(WsProtocolRequest wsProtocol){
         String deviceID=this.bytesToStringUUID(this.longToBytes(wsProtocol.getDeviceIdHigh()),this.longToBytes(wsProtocol.getDeviceIdLow()));
         String sessionID=this.bytesToStringUUID(this.longToBytes(wsProtocol.getSessionIdHigh()),this.longToBytes(wsProtocol.getSessionIdLow()));
         String sequenceID=String.valueOf(wsProtocol.getSequenceId());
@@ -109,7 +109,7 @@ public class ServerUntil {
         }
     }
 
-    public void echoPackage(WsProtocol wsProtocol){
+    public void echoPackage(WsProtocolRequest wsProtocol){
         LOGGER.debug("--------------收到包------------------");
         LOGGER.debug("头部："+Arrays.toString(this.intToByteArray(wsProtocol.getHead_data())));
         LOGGER.debug("版本号："+Arrays.toString(this.intToByteArray(wsProtocol.getVersionId())));

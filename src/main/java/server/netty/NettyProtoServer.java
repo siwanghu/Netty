@@ -1,10 +1,12 @@
 package server.netty;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,10 @@ public class NettyProtoServer {
 	public NettyProtoServer() {
 	}
 
-	public void initialize() {
+	public void initializeTcpServer() {
 		ServerBootstrap server = new ServerBootstrap();
-		EventLoopGroup bossGroup = new NioEventLoopGroup();
-		EventLoopGroup workerGroup = new NioEventLoopGroup();
+		EventLoopGroup bossGroup = new NioEventLoopGroup(12);
+		EventLoopGroup workerGroup = new NioEventLoopGroup(512);
 		try {
 			server.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
 					.childHandler(new InitializerPipeline()).option(ChannelOption.SO_BACKLOG, 128)
@@ -36,6 +38,6 @@ public class NettyProtoServer {
 	}
 
 	public static void main(String[] args) {
-		new NettyProtoServer().initialize();
+		new NettyProtoServer().initializeTcpServer();
 	}
 }
